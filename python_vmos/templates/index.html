@@ -1,0 +1,156 @@
+<html>
+<head>
+<title>视频通话vMos监测</title>
+<meta charset='utf-8'>
+</head>
+
+<body>
+
+<select name="education" id="education" onchange= getText()> 
+						<option value="-1" selected>---请选择---</option>
+						<!--
+						<option value="0">192.168.1.120</option>
+						<option value="1">192.168.1.195</option>
+						<option value="2">192.168.1.196</option>
+						<option value="3">192.168.1.197</option>
+						<option value="4">192.168.1.176</option>
+						<option value="5">192.168.1.22</option>
+						<option value="6">192.168.1.180</option>
+						-->
+</select>
+
+<div id="container" style="height: 400px; min-width: 310px;"></div>
+
+<script src='/static/jquery.js'></script>
+<script src='/static/highstock.js'></script>
+<script src='/static/exporting.js'></script>
+<script>
+var ip = "";
+var ColorArray = ['#90ed7d', '#ff2d2d'];	
+var node  = new Array();
+/*
+var abc = [{
+            	value: 0,
+            	color: ColorArray[0]
+        	}]
+*/
+var abc  = new Array();
+function getText () {
+	var  myselect=document.getElementById("education");
+	var index=myselect.selectedIndex;
+	var count = 0;	
+	tmp_ip =  myselect.options[index].text;
+	ip = tmp_ip;	
+	$(function () {
+	// 使用当前时区，否则东八区会差八个小时
+		Highcharts.setOptions({
+			global: {
+			useUTC: false
+			}
+		});
+		var x = 0;	
+		$.getJSON('/data?ip='+ip+"&loop=0", function (data) {
+	
+		for(x = 0; x < data.length; x++) {
+			if(data[x][1] == -1) {
+				//abc[1] = {value: 1506480679000, color:  '#90ed7d'}
+				abc[count] = {value: data[x][0], color:  ColorArray[count%2]}
+				count++;
+			}
+		}
+		console.log(data)
+		console.log(count)
+		// Create the chart
+		$('#container').highcharts('StockChart', {
+	
+			chart:{
+
+				events:{
+
+					load:function(){
+						var series = this.series[0]
+						setInterval(function(){
+						$.getJSON('/data?ip='+ip+"&loop=1",function(res){
+							$.each(res,function(i,v){
+			console.log(v);
+			if(v[1] == -1) {
+				count++;
+				//abc[1] = {value: 1506480679000, color:  '#90ed7d'}
+				abc[count] = {value: v[0], color:  ColorArray[count%2]}
+			}
+								series.addPoint(v)
+							})
+						})
+						},1000)
+					}
+
+				}
+			},
+
+			rangeSelector : {
+				selected : 1
+			},
+
+			title : {
+				text : '视频通话vMos分'
+			},
+			subtitle: {
+				text: '数据来源: 南京爱布谷',
+			},
+
+
+			yAxis: {
+				title: {
+				text: 'vMos 分'
+				},
+				 visible: true,
+				plotLines: [{
+					value: 0,
+					width: 1,
+					color: '#808080'
+				}]
+			},
+			series : [
+			{
+				name : 'Score',
+				data : data,
+				type : "line",
+				visible: true,
+				tooltip: {
+					valueDecimals: 2
+				},
+			zoneAxis : "x",
+			zones: abc
+/*
+			zones: [{
+            	value: 0,
+            	color: '#f7a35c'
+        	}, {
+            	value: node[0],
+            	color: '#000fff'
+        	}, {
+            	color: '#90ed7d'
+        	}]
+*/
+		  }
+		 ]
+		});
+	});
+
+	});
+}
+
+window.onload=function(){ 
+		var sel=document.getElementById("education");
+		$.getJSON('/id',function(res){
+			$.each(res,function(i,v){
+				console.log(v);
+				var member=document.createElement('option');
+			  	member.text=v[0]
+				sel.add(member,null);
+			})
+		})
+} 
+</script>
+</body>
+</html>

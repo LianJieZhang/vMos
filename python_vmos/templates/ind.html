@@ -1,0 +1,75 @@
+<html>
+<head>
+	<title>客户端注册</title>
+</head>
+<body>
+<script>
+function register()
+{
+	 username = document.getElementById("username").value
+	 password = document.getElementById("password").value
+	 confirmpass = document.getElementById("confirmpass").value
+	 email = document.getElementById("email").value
+	/*if (username.length == 0 || password.length == 0 || confirmpass.length == 0 || email.length) {
+			alert("信息填写有误!")
+			return;
+	}*/
+	if (password != confirmpass) {
+		alert("密码填写有误！")
+		return ;
+	}
+}
+<script src='/static/jquery.js'></script>
+<script src='/static/highstock.js'></script>
+<script src='/static/exporting.js'></script>
+
+</script>
+	<center>
+		<h1>用户注册</h1>
+	</center>
+
+	<h1>用户注册</h1>
+	<form>
+		<table width="0" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>用户名：</td>
+				<td><input type="text" name="username" id="username"/></td>
+			</tr>
+			<tr>
+				<td>密码： </td>
+				<td><input type="password" name="password" id="password"/></td>
+			</tr>
+			<tr>
+				<td>确认密码：</td>
+				<td><input type="password" name="confirmpass" id="confirmpass"/></td>
+			</tr>
+
+			<tr>
+				<td>电子邮箱：</td>
+				<td><input type="text" name="Email" id="email"/></td>
+			</tr>
+			<tr>
+				<td>学历：</td>
+				<td>
+					<select name="education" id="education"> 
+						<option value="-1" selected>---请选择---</option>
+						<option value="0">小学</option>
+						<option value="1">初中</option>
+						<option value="2">高中</option>
+						<option value="3">大学</option>
+						<option value="4">研究生</option>
+						<option value="5">博士</option>
+						<option value="6">神</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+			<td colspan="2"><input type="submit" onclick=register() value="注册"/>
+			<input type="submit" value="取消"/> 
+			</td>
+			</tr>
+		</table>
+	</form>
+
+</body>
+</html>
